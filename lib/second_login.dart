@@ -1,17 +1,82 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
 
 class SecondLogin extends StatefulWidget {
-  const SecondLogin({Key? key}) : super(key: key);
+  //const SecondLogin({Key? key}) : super(key: key);
+
+  String userid;
 
   @override
   State<SecondLogin> createState() => _SecondLoginState();
+
+  SecondLogin(this.userid);
 }
 
 class _SecondLoginState extends State<SecondLogin> {
 
   TextEditingController controllerUserID = TextEditingController();
   TextEditingController controllerPassword = TextEditingController();
+
+  Future<void> sendData() async {
+
+    if(controllerUserID.text != ""){
+
+      var headers = {
+        'Content-Type': 'application/json',
+      };
+      var request =
+      http.Request('POST', Uri.parse('http://mobileapp.parjinindiainfotech.in/api/Member/GetMemberDetails'));
+
+      request.body = json.encode({"SocietyCode": widget.userid,"UserName": controllerUserID.text,"Password": controllerPassword.text});
+
+      request.headers.addAll(headers);
+      print("req" + request.toString());
+      print("body" + request.body);
+      print("headers" + request.headers.toString());
+
+      http.StreamedResponse response = await request.send();
+
+      Map<String,dynamic> result = {};
+
+      var res1;
+      if (response.statusCode == 200) {
+        //print(await response.stream.bytesToString());
+        print("otp sent succesfully");
+
+        result = jsonDecode(await response.stream.bytesToString()) as Map<String, dynamic>;
+
+        // if(result["result"][0]["userName"] == controllerUserID.text) {
+        //   if (result["result"][0]["userPassword"] == controllerPassword.text) {
+        //     print("Userid and password matched");
+        //   }
+        //   else{
+        //     print("Password does not matched");
+        //   }
+        // }else{
+        //   print("userid not found");
+        // }
+        print(result["result"] is List);
+        if(result["result"]!=[]){
+          if(result["result"][0]["userName"] == controllerUserID.text) {
+              if (result["result"][0]["userPassword"] == controllerPassword.text) {
+                print("Userid and password matched");
+              }
+              }
+          }
+        else{
+          print("Userid and Password not found");
+        }
+
+
+      } else {
+        print(response.reasonPhrase);
+        print("failed");
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +150,7 @@ class _SecondLoginState extends State<SecondLogin> {
                                   ),
                                   margin: EdgeInsets.only(top: 15),
                                   child: TextField(
-                                    controller: controllerPassword,
+                                    controller: controllerUserID,
                                     textAlign: TextAlign.start,
                                     textAlignVertical: TextAlignVertical.center,
                                     decoration: InputDecoration(
@@ -137,7 +202,7 @@ class _SecondLoginState extends State<SecondLogin> {
                                   ),
                                   margin: EdgeInsets.only(top: 15),
                                   child: TextField(
-                                    controller: controllerUserID,
+                                    controller: controllerPassword,
                                     textAlign: TextAlign.start,
                                     textAlignVertical: TextAlignVertical.center,
                                     decoration: InputDecoration(
@@ -170,6 +235,7 @@ class _SecondLoginState extends State<SecondLogin> {
                                     ),
                                     onPressed: () {
                                       print('Pressed');
+                                      sendData();
 
                                     },
                                   ),
