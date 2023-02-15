@@ -46,7 +46,7 @@ class _FirstLoginState extends State<FirstLogin> {
 
       if(result["result"][0]["societyCd"] == controllerUserID.text){
         Navigator.push(context, MaterialPageRoute(builder: (context) =>
-            SecondLogin()
+            SecondLogin(controllerUserID.text)
           ,),);
       }
 

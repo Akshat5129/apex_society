@@ -48,18 +48,8 @@ class _SecondLoginState extends State<SecondLogin> {
 
         result = jsonDecode(await response.stream.bytesToString()) as Map<String, dynamic>;
 
-        // if(result["result"][0]["userName"] == controllerUserID.text) {
-        //   if (result["result"][0]["userPassword"] == controllerPassword.text) {
-        //     print("Userid and password matched");
-        //   }
-        //   else{
-        //     print("Password does not matched");
-        //   }
-        // }else{
-        //   print("userid not found");
-        // }
-        print(result["result"] is List);
-        if(result["result"]!=[]){
+        
+        if(result["result"].length!=0){
           if(result["result"][0]["userName"] == controllerUserID.text) {
               if (result["result"][0]["userPassword"] == controllerPassword.text) {
                 print("Userid and password matched");
