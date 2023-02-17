@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:apex_society/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
@@ -7,12 +8,12 @@ import 'package:http/http.dart' as http;
 class SecondLogin extends StatefulWidget {
   //const SecondLogin({Key? key}) : super(key: key);
 
-  String userid;
+  String userid,img_link,soc_name;
 
   @override
   State<SecondLogin> createState() => _SecondLoginState();
 
-  SecondLogin(this.userid);
+  SecondLogin(this.userid,this.img_link,this.soc_name);
 }
 
 class _SecondLoginState extends State<SecondLogin> {
@@ -43,16 +44,18 @@ class _SecondLoginState extends State<SecondLogin> {
 
       var res1;
       if (response.statusCode == 200) {
-        //print(await response.stream.bytesToString());
         print("otp sent succesfully");
 
         result = jsonDecode(await response.stream.bytesToString()) as Map<String, dynamic>;
 
-        
+
         if(result["result"].length!=0){
           if(result["result"][0]["userName"] == controllerUserID.text) {
               if (result["result"][0]["userPassword"] == controllerPassword.text) {
                 print("Userid and password matched");
+                Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                    HomeScreen(widget.userid)
+                  ,),);
               }
               }
           }
@@ -79,8 +82,25 @@ class _SecondLoginState extends State<SecondLogin> {
               children: [
                 Column(
                   children: [
-                    //Image.asset("assets/images/logo.png", width: 200),
-                    SizedBox(height: 100,),
+                    Image.network('https://googleflutter.com/sample_image.jpg',// width: 300,
+                      height: 120,
+                    ),
+                    SizedBox(height: 5,),
+
+                    Text(
+                      widget.soc_name,
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.nunito(
+                        textStyle: TextStyle(
+                            color: Colors.black87,
+                            letterSpacing: .2,
+                            fontSize: 15,
+                        ),
+                      ),
+                    ),
+
+
+                    SizedBox(height: 20,),
                     Text(
                       "LOGIN",
                       textAlign: TextAlign.center,
@@ -88,14 +108,14 @@ class _SecondLoginState extends State<SecondLogin> {
                         textStyle: TextStyle(
                             color: Colors.black87,
                             letterSpacing: .2,
-                            fontSize: 29,
+                            fontSize: 26,
                             fontWeight: FontWeight.bold
                         ),
                       ),
                     ),
 
                     Container(
-                      margin: EdgeInsets.only(top: 60),
+                      margin: EdgeInsets.only(top: 30),
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.all(Radius.circular(10))
@@ -213,7 +233,7 @@ class _SecondLoginState extends State<SecondLogin> {
                                 ),
 
                                 GestureDetector(child: Container(
-                                  margin: EdgeInsets.only(top: 40),
+                                  margin: EdgeInsets.only(top: 20),
                                   padding: EdgeInsets.symmetric(vertical: 25.0),
                                   width: double.infinity,
                                   child:  TextButton(
@@ -241,7 +261,7 @@ class _SecondLoginState extends State<SecondLogin> {
               ])
       ),
       bottomSheet:  Container(
-        height: 59,
+        height: 49,
         color: Color.fromRGBO(80, 109, 138, 1),
       ),
     );

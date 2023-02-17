@@ -15,6 +15,7 @@ class FirstLogin extends StatefulWidget {
 class _FirstLoginState extends State<FirstLogin> {
 
   TextEditingController controllerUserID = TextEditingController();
+  String img_link = "";
 
   Future<void> sendData() async {
 
@@ -45,9 +46,9 @@ class _FirstLoginState extends State<FirstLogin> {
       result = jsonDecode(await response.stream.bytesToString()) as Map<String, dynamic>;
 
       if(result["result"][0]["societyCd"] == controllerUserID.text){
-        Navigator.push(context, MaterialPageRoute(builder: (context) =>
-            SecondLogin(controllerUserID.text)
-          ,),);
+
+        getProjectData();
+
       }
 
     } else {
@@ -56,6 +57,49 @@ class _FirstLoginState extends State<FirstLogin> {
     }
     }
   }
+
+
+  @override
+  Future<void> getProjectData() async {
+
+    var res;
+
+    var headers = {
+      'Content-Type': 'application/json',
+    };
+    var request =
+    http.Request('POST', Uri.parse('http://mobileapp.parjinindiainfotech.in/api/Society/LoginSocCd'));
+
+    request.body = json.encode({"SocCd": controllerUserID.text});
+
+    request.headers.addAll(headers);
+    print("req" + request.toString());
+    print("body" + request.body);
+    print("headers" + request.headers.toString());
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+
+
+      res = jsonDecode(await response.stream.bytesToString()) as Map<String, dynamic>;
+
+      print(res["result"][0]['socName']);
+      print(res["result"][0]["socLogo"]);
+
+      Navigator.push(context, MaterialPageRoute(builder: (context) =>
+          SecondLogin(controllerUserID.text,res["result"][0]["socLogo"],res["result"][0]['socName'])
+        ,),);
+
+
+      print("data GET SUccessful");
+    } else {
+      print(response.reasonPhrase);
+      print("failed");
+    }
+    print(response.statusCode);
+  }
+
 
   @override
   Widget build(BuildContext context) {
