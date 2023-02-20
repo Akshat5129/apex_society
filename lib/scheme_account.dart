@@ -98,7 +98,7 @@ class _SchemeAccState extends State<SchemeAcc> {
                   children: [
                     GestureDetector(child: Icon(Icons.arrow_back),
                       onTap:(){
-                        Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>
                             HomeScreen()
                           ,),);
                       }

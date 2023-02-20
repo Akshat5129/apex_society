@@ -39,8 +39,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Future<void> getProjectData() async {
 
-    print("this");
-
     var headers = {
       'Content-Type': 'application/json',
     };
@@ -67,9 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
       print(result);
       print(result["result"][0]['menuName']);
       print(result["result"][0]["menuIcon"]);
-
-
-      print("data GET SUccessfull");
+      
     } else {
       print(response.reasonPhrase);
       print("failed");
