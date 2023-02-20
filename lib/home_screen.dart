@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:apex_society/scheme_account.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:google_fonts/google_fonts.dart';
@@ -23,6 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
     box1 = await Hive.openBox('logindata');
     setState(() {
       SocId=box1.get("socID");
+      getProjectData();
     });
   }
 
@@ -31,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // TODO: implement initState
     super.initState();
     createBox();
+
   }
 
   @override
@@ -76,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    getProjectData();
+
     return Scaffold(
 
       body: ListView(
@@ -96,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               alignment: Alignment.centerLeft,
               child: Text(
-                "Board",
+                "Board1",
                 textAlign: TextAlign.left,
                 style: GoogleFonts.nunito(
                   textStyle: TextStyle(
@@ -138,7 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           (index){
                         return Container(
 
-                          child: Card(
+                          child: GestureDetector(child: Card(
                               color: Color.fromRGBO(255, 240, 212, 1),
                               child:Container(
                                 padding: EdgeInsets.all(16),
@@ -181,6 +184,14 @@ class _HomeScreenState extends State<HomeScreen> {
                               )
                             //Text(result["response"][index]["Name"]),
                           ),
+                          onTap: (){
+                            if(result["result"][index]['menuName'] == "Scheme Accounts"){
+                              Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                                  SchemeAcc()
+                                ,),);
+                            }
+                          },
+                          )
                         );
                       }
                   ),

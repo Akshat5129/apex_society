@@ -65,6 +65,10 @@ flutter:
   assets:
     - assets/images/logo_sample.png
     - assets/images/splash_img.png
+    - assets/images/CS.png
+    - assets/images/loan.png
+    - assets/images/member.png
+    - assets/images/saving.png
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

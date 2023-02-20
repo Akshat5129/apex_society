@@ -1,10 +1,22 @@
 import 'package:apex_society/firstlogin.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 
-void main() {
+late Box box1;
+
+Future<void> main() async {
+  await Hive.initFlutter();
+  box1 = await Hive.openBox('logindata');
   runApp(const MyApp());
+  print("boxx 11");
+  //print(box1.get("isLogged"));
 }
+
+// Future<void> main() async{
+//   runApp(c onst MyApp());
+// }
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
