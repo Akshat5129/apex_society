@@ -4,6 +4,7 @@ import 'package:apex_society/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:hive/hive.dart';
 
 class SecondLogin extends StatefulWidget {
   //const SecondLogin({Key? key}) : super(key: key);
@@ -20,6 +21,23 @@ class _SecondLoginState extends State<SecondLogin> {
 
   TextEditingController controllerUserID = TextEditingController();
   TextEditingController controllerPassword = TextEditingController();
+
+
+  late Box box1;
+  String SocId="";
+
+  void createBox() async{
+    box1 = await Hive.openBox('logindata');
+
+
+  }
+
+
+  @override
+  void initState() {
+    super.initState();
+    createBox();
+  }
 
   Future<void> sendData() async {
 
@@ -53,8 +71,10 @@ class _SecondLoginState extends State<SecondLogin> {
           if(result["result"][0]["userName"] == controllerUserID.text) {
               if (result["result"][0]["userPassword"] == controllerPassword.text) {
                 print("Userid and password matched");
+                box1.put("socID", widget.userid);
+                box1.put("userName", result["result"][0]["userName"]);
                 Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                    HomeScreen(widget.userid)
+                    HomeScreen()
                   ,),);
               }
               }

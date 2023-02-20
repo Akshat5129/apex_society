@@ -3,12 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
 
 class HomeScreen extends StatefulWidget {
-  String socID;
-
-
-  HomeScreen(this.socID);
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -18,11 +16,21 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Map<String, dynamic> result = {};
 
+  late Box box1;
+  String SocId= "";
+
+  void createBox() async{
+    box1 = await Hive.openBox('logindata');
+    setState(() {
+      SocId=box1.get("socID");
+    });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    //getProjectData();
+    createBox();
   }
 
   @override
@@ -36,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
     var request =
     http.Request('POST', Uri.parse('http://mobileapp.parjinindiainfotech.in/api/MobileMenu/MobileMenu'));
 
-    request.body = json.encode({"SocCd": widget.socID});
+    request.body = json.encode({"SocCd": SocId});
 
     request.headers.addAll(headers);
     print("req" + request.toString());
@@ -70,15 +78,55 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     getProjectData();
     return Scaffold(
+
       body: ListView(
         shrinkWrap: true,
         children: [
         Container(
+          margin: EdgeInsets.only(bottom: 30),
         padding: EdgeInsets.all(30),
         child: Column(
           children: [
+            Row(
+              children: [
+                Icon(Icons.menu)
+              ],
+            ),
+            SizedBox(height: 10,),
+            Container(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Board",
+                textAlign: TextAlign.left,
+                style: GoogleFonts.nunito(
+                  textStyle: TextStyle(
+                      color: Colors.black,
+                      letterSpacing: .2,
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Select your option",
+                textAlign: TextAlign.left,
+                style: GoogleFonts.nunito(
+                  textStyle: TextStyle(
+                      color: Colors.black54,
+                      letterSpacing: .2,
+                      fontSize: 22,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 20,),
             Container(
                 child: GridView.count(
+                  mainAxisSpacing: 10,
+                  crossAxisSpacing: 10,
                   childAspectRatio: (1 / 0.85),
                   physics: ScrollPhysics(),
                   shrinkWrap: true,
@@ -99,7 +147,22 @@ class _HomeScreenState extends State<HomeScreen> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Icon(Icons.access_time_filled),
+                                    //Icon(Icons.access_time_filled),
+                                    Image.network(result["result"][index]['menuLink'],
+                                      errorBuilder: (context, url, error) => new Icon(Icons.error),
+                                      // loadingBuilder: (BuildContext context, Widget child,
+                                      //     ImageChunkEvent? loadingProgress) {
+                                      //   if (loadingProgress == null) return child;
+                                      //   return Center(
+                                      //     child: CircularProgressIndicator(
+                                      //       value: loadingProgress.expectedTotalBytes != null
+                                      //           ? loadingProgress.cumulativeBytesLoaded /
+                                      //           loadingProgress.expectedTotalBytes!
+                                      //           : null,
+                                      //     ),
+                                      //   );
+                                      // },
+                                    ),
                                     SizedBox(height: 5,),
                                     Text(
                                       result["result"][index]['menuName'],
@@ -125,7 +188,12 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-      ),],)
+      ),],),
+
+      bottomSheet:  Container(
+        height: 49,
+        color: Color.fromRGBO(80, 109, 138, 1),
+      ),
     );
   }
 }
